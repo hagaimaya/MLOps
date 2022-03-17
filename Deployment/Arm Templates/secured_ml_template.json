@@ -2,6 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "workspaces_name": {
+            "defaultValue": "mlops-test",
+            "type": "String"
+        },
         "virtualNetworks_vnet_mlops_name": {
             "defaultValue": "vnet-mlops",
             "type": "String"
@@ -22,10 +26,7 @@
             "defaultValue": "mlopstest8392629195",
             "type": "String"
         },
-        "workspaces_mlops_test_name": {
-            "defaultValue": "mlops-test",
-            "type": "String"
-        },
+
         "networkInterfaces_vm_win_jump_mlops807_name": {
             "defaultValue": "vm-win-jump-mlops807",
             "type": "String"
@@ -61,14 +62,20 @@
         "actiongroups_application_insights_smart_detection_externalid": {
             "defaultValue": "/subscriptions/8006d35a-08b5-4d8c-a47e-330dba750f98/resourceGroups/limor_servers/providers/microsoft.insights/actiongroups/application insights smart detection",
             "type": "String"
+        },
+        "Environment": {
+            "type": "string",
+            "allowedValues": [ "dev", "stg", "prod" ]
         }
     },
-    "variables": {},
+    "variables": {
+        "ApplicationInsight": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-appi')]"
+    },
     "resources": [
         {
             "type": "microsoft.insights/components",
             "apiVersion": "2020-02-02",
-            "name": "[parameters('components_mlopstest9967389833_name')]",
+            "name": "[variables('ApplicationInsight')]",
             "location": "westeurope",
             "kind": "web",
             "properties": {
@@ -769,9 +776,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/datastores",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/workspaceartifactstore')]",
+            "name": "[concat(parameters('workspaces_name'), '/workspaceartifactstore')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "contents": {
@@ -793,9 +800,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/datastores",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/workspaceblobstore')]",
+            "name": "[concat(parameters('workspaces_name'), '/workspaceblobstore')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "contents": {
@@ -817,9 +824,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/datastores",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/workspacefilestore')]",
+            "name": "[concat(parameters('workspaces_name'), '/workspacefilestore')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "contents": {
@@ -841,9 +848,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/datastores",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/workspaceworkingdirectory')]",
+            "name": "[concat(parameters('workspaces_name'), '/workspaceworkingdirectory')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "contents": {
@@ -865,9 +872,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-Designer-Score')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-Designer-Score')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -877,9 +884,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -889,9 +896,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -901,9 +908,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -913,9 +920,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -925,9 +932,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -937,9 +944,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-PyTorch-1.3-CPU')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-PyTorch-1.3-CPU')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -949,9 +956,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -961,9 +968,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -973,9 +980,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -985,9 +992,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -997,9 +1004,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1009,9 +1016,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-responsibleai-0.17-ubuntu20.04-py38-cpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-responsibleai-0.17-ubuntu20.04-py38-cpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1021,9 +1028,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1033,9 +1040,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1045,9 +1052,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1057,9 +1064,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1069,9 +1076,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1081,9 +1088,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1093,9 +1100,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1105,9 +1112,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1117,9 +1124,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1129,9 +1136,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1141,9 +1148,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-Triton')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-Triton')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1153,9 +1160,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-VowpalWabbit-8.8.0')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-VowpalWabbit-8.8.0')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1165,9 +1172,9 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "properties": {},
@@ -1177,10 +1184,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/privateEndpointConnections",
             "apiVersion": "2022-01-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/', parameters('workspaces_mlops_test_name'), '.f11791ff-c708-499b-8ec6-5fe8c47540c0')]",
+            "name": "[concat(parameters('workspaces_name'), '/', parameters('workspaces_name'), '.f11791ff-c708-499b-8ec6-5fe8c47540c0')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "provisioningState": "Succeeded",
@@ -1527,10 +1534,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-responsibleai-0.17-ubuntu20.04-py38-cpu/1')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-responsibleai-0.17-ubuntu20.04-py38-cpu/1')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-responsibleai-0.17-ubuntu20.04-py38-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-responsibleai-0.17-ubuntu20.04-py38-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for the interactive Responsible AI dashboard in AzureML",
@@ -1551,10 +1558,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/10')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/10')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -1576,10 +1583,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/11')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/11')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1602,10 +1609,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/11')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/11')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -1627,10 +1634,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-Designer-Score/12')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-Designer-Score/12')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-Designer-Score')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-Designer-Score')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "tags": {},
@@ -1649,10 +1656,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/12')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/12')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1675,10 +1682,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/13')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/13')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1701,10 +1708,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/14')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/14')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1727,10 +1734,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/15')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu/15')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.10-ubuntu18.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1753,10 +1760,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/18')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/18')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1779,10 +1786,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/18')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/18')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1805,10 +1812,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/19')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/19')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1831,10 +1838,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/19')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/19')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1857,10 +1864,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/20')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/20')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1883,10 +1890,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/20')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/20')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1909,10 +1916,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/21')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/21')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1935,10 +1942,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/21')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/21')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -1961,10 +1968,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/21')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/21')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -1986,10 +1993,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/22')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu/22')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.8-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -2012,10 +2019,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/22')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu/22')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.9-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -2038,10 +2045,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/22')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/22')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -2063,10 +2070,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/23')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/23')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for machine learning with Scikit-learn, LightGBM, XGBoost, Dask containing AzureML Python SDK and additional packages.",
@@ -2091,10 +2098,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/23')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/23')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -2116,10 +2123,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-Triton/23')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-Triton/23')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-Triton')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-Triton')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "tags": {},
@@ -2138,10 +2145,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/24')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/24')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for machine learning with Scikit-learn, LightGBM, XGBoost, Dask containing AzureML Python SDK and additional packages.",
@@ -2166,10 +2173,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/24')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/24')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -2191,10 +2198,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/25')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/25')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for machine learning with Scikit-learn, LightGBM, XGBoost, Dask containing AzureML Python SDK and additional packages.",
@@ -2219,10 +2226,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/25')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/25')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -2245,10 +2252,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/25')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24-ubuntu18.04-py37-cpu/25')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-0.24-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -2270,10 +2277,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/26')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/26')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for machine learning with Scikit-learn, LightGBM, XGBoost, Dask containing AzureML Python SDK and additional packages.",
@@ -2298,10 +2305,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/26')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/26')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -2324,10 +2331,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/26')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/26')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -2350,10 +2357,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/27')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu/27')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-lightgbm-3.2-ubuntu18.04-py37-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for machine learning with Scikit-learn, LightGBM, XGBoost, Dask containing AzureML Python SDK and additional packages.",
@@ -2378,10 +2385,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/27')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/27')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -2404,10 +2411,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/27')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/27')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -2430,10 +2437,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/28')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/28')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A minimal environment for Inference, does not contain any framework and additional python packages.",
@@ -2457,10 +2464,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/28')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/28')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An MLFlow curated environment for Inference and containing additional python packages.",
@@ -2484,10 +2491,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/28')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/28')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -2510,10 +2517,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/28')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/28')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -2536,10 +2543,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A minimal environment for Inference, does not contain any framework and additional python packages.",
@@ -2563,10 +2570,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An MLFlow curated environment for Inference and containing additional python packages.",
@@ -2590,10 +2597,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An ONNX Runtime curated environment for Inference and containing additional python packages.",
@@ -2617,10 +2624,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A PyTorch curated environment for Inference and containing additional python packages.",
@@ -2644,10 +2651,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A PyTorch curated environment for Inference and containing additional python packages.",
@@ -2671,10 +2678,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with PyTorch containing the Azure ML SDK and additional python packages.",
@@ -2697,10 +2704,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A scikit-learn curated environment for Inference and containing additional python packages.",
@@ -2724,10 +2731,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A TensorFlow curated environment for Inference and containing additional python packages.",
@@ -2751,10 +2758,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A TensorFlow curated environment for Inference and containing additional python packages.",
@@ -2778,10 +2785,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -2804,10 +2811,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference/29')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference/29')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A XGBoost curated environment for Inference, containing scikit-learn and additional python packages.",
@@ -2832,10 +2839,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu/3')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu/3')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -2858,10 +2865,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/3')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/3')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -2884,10 +2891,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/3')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/3')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -2910,10 +2917,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A minimal environment for Inference, does not contain any framework and additional python packages.",
@@ -2937,10 +2944,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An MLFlow curated environment for Inference and containing additional python packages.",
@@ -2964,10 +2971,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An ONNX Runtime curated environment for Inference and containing additional python packages.",
@@ -2991,10 +2998,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A PyTorch curated environment for Inference and containing additional python packages.",
@@ -3018,10 +3025,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A PyTorch curated environment for Inference and containing additional python packages.",
@@ -3045,10 +3052,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A scikit-learn curated environment for Inference and containing additional python packages.",
@@ -3072,10 +3079,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3099,10 +3106,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3126,10 +3133,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A GPU-enabled TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3155,10 +3162,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -3181,10 +3188,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference/30')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference/30')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A XGBoost curated environment for Inference, containing scikit-learn and additional python packages.",
@@ -3209,10 +3216,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A minimal environment for Inference, does not contain any framework and additional python packages.",
@@ -3236,10 +3243,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An MLFlow curated environment for Inference and containing additional python packages.",
@@ -3263,10 +3270,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An ONNX Runtime curated environment for Inference and containing additional python packages.",
@@ -3290,10 +3297,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A PyTorch curated environment for Inference and containing additional python packages.",
@@ -3317,10 +3324,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A PyTorch curated environment for Inference and containing additional python packages.",
@@ -3344,10 +3351,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A scikit-learn curated environment for Inference and containing additional python packages.",
@@ -3371,10 +3378,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3398,10 +3405,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3425,10 +3432,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A GPU-enabled TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3454,10 +3461,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference/31')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference/31')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A XGBoost curated environment for Inference, containing scikit-learn and additional python packages.",
@@ -3482,10 +3489,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-minimal-ubuntu18.04-py37-cpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-minimal-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A minimal environment for Inference, does not contain any framework and additional python packages.",
@@ -3509,10 +3516,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-mlflow-ubuntu18.04-py37-cpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-mlflow-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An MLFlow curated environment for Inference and containing additional python packages.",
@@ -3536,10 +3543,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-onnxruntime-1.6-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An ONNX Runtime curated environment for Inference and containing additional python packages.",
@@ -3563,10 +3570,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.6-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A PyTorch curated environment for Inference and containing additional python packages.",
@@ -3590,10 +3597,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-pytorch-1.7-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A PyTorch curated environment for Inference and containing additional python packages.",
@@ -3617,10 +3624,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A scikit-learn curated environment for Inference and containing additional python packages.",
@@ -3644,10 +3651,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-1.15-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3671,10 +3678,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3698,10 +3705,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A GPU-enabled TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3727,10 +3734,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-VowpalWabbit-8.8.0/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-VowpalWabbit-8.8.0/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-VowpalWabbit-8.8.0')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-VowpalWabbit-8.8.0')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "tags": {},
@@ -3749,10 +3756,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference/32')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference/32')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-xgboost-0.9-ubuntu18.04-py37-cpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A XGBoost curated environment for Inference, containing scikit-learn and additional python packages.",
@@ -3777,10 +3784,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference/33')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference/33')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.4-ubuntu18.04-py37-cuda11.0.3-gpu-inference')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "A GPU-enabled TensorFlow curated environment for Inference and containing additional python packages.",
@@ -3806,10 +3813,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu/4')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu/4')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -3832,10 +3839,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/4')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/4')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -3858,10 +3865,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/4')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/4')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -3884,10 +3891,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-PyTorch-1.3-CPU/40')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-PyTorch-1.3-CPU/40')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-PyTorch-1.3-CPU')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-PyTorch-1.3-CPU')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "tags": {},
@@ -3906,10 +3913,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu/5')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu/5')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -3932,10 +3939,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/5')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/5')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -3958,10 +3965,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/5')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/5')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -3984,10 +3991,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu/6')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu/6')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.5-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -4010,10 +4017,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/6')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/6')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -4036,10 +4043,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/6')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/6')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -4062,10 +4069,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/7')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/7')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -4087,10 +4094,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/7')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu/7')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.6-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -4113,10 +4120,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/7')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu/7')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-tensorflow-2.7-ubuntu20.04-py38-cuda11-gpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for deep learning with Tensorflow containing the Azure ML SDK and additional python packages.",
@@ -4139,10 +4146,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/8')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/8')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -4164,10 +4171,10 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
             "apiVersion": "2021-03-01-preview",
-            "name": "[concat(parameters('workspaces_mlops_test_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/9')]",
+            "name": "[concat(parameters('workspaces_name'), '/AzureML-sklearn-1.0-ubuntu20.04-py38-cpu/9')]",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_mlops_test_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]"
+                "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaces_name'), 'AzureML-sklearn-1.0-ubuntu20.04-py38-cpu')]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
             "properties": {
                 "description": "An environment for tasks such as regression, clustering, and classification with Scikit-learn. Contains the Azure ML SDK and additional python packages.",
@@ -4224,7 +4231,7 @@
             "name": "[parameters('privateEndpoints_private_endpoint_mlops_test_name')]",
             "location": "westeurope",
             "dependsOn": [
-                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]",
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]"
             ],
             "properties": {
@@ -4232,7 +4239,7 @@
                     {
                         "name": "mlops-test-PrivateEndpoint",
                         "properties": {
-                            "privateLinkServiceId": "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_mlops_test_name'))]",
+                            "privateLinkServiceId": "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]",
                             "groupIds": [
                                 "amlworkspace"
                             ],
@@ -4316,7 +4323,7 @@
         {
             "type": "Microsoft.MachineLearningServices/workspaces",
             "apiVersion": "2022-01-01-preview",
-            "name": "[parameters('workspaces_mlops_test_name')]",
+            "name": "[parameters('workspaces_name')]",
             "location": "westeurope",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]",
@@ -4331,7 +4338,7 @@
                 "type": "SystemAssigned"
             },
             "properties": {
-                "friendlyName": "[parameters('workspaces_mlops_test_name')]",
+                "friendlyName": "[parameters('workspaces_name')]",
                 "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]",
                 "keyVault": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_mlopstest6114817870_name'))]",
                 "applicationInsights": "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]",
