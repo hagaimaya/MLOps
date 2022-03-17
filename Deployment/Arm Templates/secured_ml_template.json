@@ -78,6 +78,7 @@
         "ApplicationInsightName": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-appi')]",
         "KeyVaultName": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-kv')]",
         "VirtualNetworkName": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-vnet')]",
+        "storageAccountName": "[replace(concat(parameters('Environment'), '-', parameters('workspaces_name'), '-st'), '-', '')]",
         "splittedIpAddress": "[split(parameters('Vnet_addressPrefixes'), '.')]",
         "Subnet_Compute_Name": "Compute",
         "Subnet_PrivateEndpoint_Name": "PrivateEndpoint"
@@ -198,7 +199,7 @@
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2021-08-01",
-            "name": "[parameters('storageAccounts_mlopstest8392629195_name')]",
+            "name": "[variables('storageAccountName')]",
             "location": "[parameters('Location')]",
             "sku": {
                 "name": "Standard_LRS",
@@ -1370,9 +1371,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('storageAccounts_mlopstest8392629195_name'), '/default')]",
+            "name": "[concat(variables('storageAccountName'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -1411,9 +1412,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/fileServices",
             "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('storageAccounts_mlopstest8392629195_name'), '/default')]",
+            "name": "[concat(variables('storageAccountName'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -1435,9 +1436,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/queueServices",
             "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('storageAccounts_mlopstest8392629195_name'), '/default')]",
+            "name": "[concat(variables('storageAccountName'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
                 "cors": {
@@ -1448,9 +1449,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/tableServices",
             "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('storageAccounts_mlopstest8392629195_name'), '/default')]",
+            "name": "[concat(variables('storageAccountName'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
                 "cors": {
@@ -4188,10 +4189,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('storageAccounts_mlopstest8392629195_name'), '/default/azureml')]",
+            "name": "[concat(variables('storageAccountName'), '/default/azureml')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_mlopstest8392629195_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccountName'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
                 "immutableStorageWithVersioning": {
@@ -4205,10 +4206,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('storageAccounts_mlopstest8392629195_name'), '/default/azureml-blobstore-e757ca35-34bd-413c-b24c-b52516861f2b')]",
+            "name": "[concat(variables('storageAccountName'), '/default/azureml-blobstore-e757ca35-34bd-413c-b24c-b52516861f2b')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_mlopstest8392629195_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccountName'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
                 "immutableStorageWithVersioning": {
@@ -4222,10 +4223,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
             "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('storageAccounts_mlopstest8392629195_name'), '/default/azureml-filestore-e757ca35-34bd-413c-b24c-b52516861f2b')]",
+            "name": "[concat(variables('storageAccountName'), '/default/azureml-filestore-e757ca35-34bd-413c-b24c-b52516861f2b')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccounts_mlopstest8392629195_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/fileServices', variables('storageAccountName'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
                 "accessTier": "TransactionOptimized",
@@ -4236,10 +4237,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
             "apiVersion": "2021-08-01",
-            "name": "[concat(parameters('storageAccounts_mlopstest8392629195_name'), '/default/code-391ff5ac-6576-460f-ba4d-7e03433c68b6')]",
+            "name": "[concat(variables('storageAccountName'), '/default/code-391ff5ac-6576-460f-ba4d-7e03433c68b6')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccounts_mlopstest8392629195_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/fileServices', variables('storageAccountName'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
                 "accessTier": "TransactionOptimized",
@@ -4253,7 +4254,7 @@
             "name": "[parameters('workspaces_name')]",
             "location": "[parameters('Location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
                 "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -4266,7 +4267,7 @@
             },
             "properties": {
                 "friendlyName": "[parameters('workspaces_name')]",
-                "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]",
+                "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
                 "keyVault": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
                 "applicationInsights": "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]",
                 "hbiWorkspace": false,
