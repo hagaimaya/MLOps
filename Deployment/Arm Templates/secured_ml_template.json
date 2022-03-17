@@ -69,11 +69,18 @@
         },
         "Location": {
             "type": "string"
+        },
+        "Vnet_addressPrefixes": {
+            "type": "string"
         }
     },
     "variables": {
         "ApplicationInsightName": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-appi')]",
-        "KeyVaultName": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-kv')]"
+        "KeyVaultName": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-kv')]",
+        "VirtualNetworkName": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-vnet')]",
+        "splittedIpAddress": "[split(parameters('Vnet_addressPrefixes'), '.')]",
+        "Subnet_Compute_Name": "Compute",
+        "Subnet_PrivateEndpoint_Name": "PrivateEndpoint"
     },
     "resources": [
         {
@@ -154,67 +161,32 @@
             }
         },
         {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2020-11-01",
-            "name": "[parameters('publicIPAddresses_vm_win_jump_mlops_ip_name')]",
-            "location": "[parameters('Location')]",
-            "sku": {
-                "name": "Basic",
-                "tier": "Regional"
-            },
-            "properties": {
-                "ipAddress": "23.97.196.154",
-                "publicIPAddressVersion": "IPv4",
-                "publicIPAllocationMethod": "Dynamic",
-                "idleTimeoutInMinutes": 4,
-                "ipTags": []
-            }
-        },
-        {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
-            "name": "[parameters('virtualNetworks_vnet_mlops_name')]",
+            "name": "[variables('VirtualNetworkName')]",
             "location": "[parameters('Location')]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
-                        "10.5.0.0/16"
+                        "[parameters('Vnet_addressPrefixes')]"
                     ]
                 },
                 "subnets": [
                     {
-                        "name": "default",
+                        "name": "[variables('Subnet_Compute_Name')]",
                         "properties": {
-                            "addressPrefix": "10.5.0.0/24",
+                            "addressPrefix": "[concat(variables('splittedIpAddress')[0],'.', variables('splittedIpAddress')[1], '.','0.0/24')]",
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
                             "privateLinkServiceNetworkPolicies": "Enabled"
                         }
                     },
                     {
-                        "name": "sub-b",
+                        "name": "[variables('Subnet_PrivateEndpoint_Name')]",
                         "properties": {
-                            "addressPrefix": "10.5.2.0/24",
+                            "addressPrefix": "[concat(variables('splittedIpAddress')[0],'.', variables('splittedIpAddress')[1], '.','1.0/24')]",
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    },
-                    {
-                        "name": "sub-c",
-                        "properties": {
-                            "addressPrefix": "10.5.3.0/24",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Enabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    },
-                    {
-                        "name": "sub-a",
-                        "properties": {
-                            "addressPrefix": "10.5.1.0/24",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Disabled",
                             "privateLinkServiceNetworkPolicies": "Enabled"
                         }
                     }
@@ -1160,7 +1132,7 @@
             "name": "[parameters('networkInterfaces_private_endpoint_mlops_test_nic_b4b8e3f6_93ef_49fe_a862_ec3cc044fe9a_name')]",
             "location": "[parameters('Location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VirtualNetworkName'), 'sub-a')]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -1170,7 +1142,7 @@
                             "privateIPAddress": "10.5.1.5",
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VirtualNetworkName'), 'sub-a')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -1182,7 +1154,7 @@
                             "privateIPAddress": "10.5.1.6",
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VirtualNetworkName'), 'sub-a')]"
                             },
                             "primary": false,
                             "privateIPAddressVersion": "IPv4"
@@ -1342,9 +1314,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_mlops_name'), '/default')]",
+            "name": "[concat(variables('VirtualNetworkName'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('VirtualNetworkName'))]"
             ],
             "properties": {
                 "addressPrefix": "10.5.0.0/24",
@@ -1356,9 +1328,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_mlops_name'), '/sub-a')]",
+            "name": "[concat(variables('VirtualNetworkName'), '/sub-a')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('VirtualNetworkName'))]"
             ],
             "properties": {
                 "addressPrefix": "10.5.1.0/24",
@@ -1370,9 +1342,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_mlops_name'), '/sub-b')]",
+            "name": "[concat(variables('VirtualNetworkName'), '/sub-b')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('VirtualNetworkName'))]"
             ],
             "properties": {
                 "addressPrefix": "10.5.2.0/24",
@@ -1384,9 +1356,9 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2020-11-01",
-            "name": "[concat(parameters('virtualNetworks_vnet_mlops_name'), '/sub-c')]",
+            "name": "[concat(variables('VirtualNetworkName'), '/sub-c')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('VirtualNetworkName'))]"
             ],
             "properties": {
                 "addressPrefix": "10.5.3.0/24",
@@ -4155,12 +4127,12 @@
             "location": "global",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_workspace_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('VirtualNetworkName'))]"
             ],
             "properties": {
                 "registrationEnabled": false,
                 "virtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('VirtualNetworkName'))]"
                 }
             }
         },
@@ -4171,12 +4143,12 @@
             "location": "global",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('VirtualNetworkName'))]"
             ],
             "properties": {
                 "registrationEnabled": false,
                 "virtualNetwork": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('VirtualNetworkName'))]"
                 }
             }
         },
@@ -4187,7 +4159,7 @@
             "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]"
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VirtualNetworkName'), 'sub-a')]"
             ],
             "properties": {
                 "privateLinkServiceConnections": [
@@ -4208,7 +4180,7 @@
                 ],
                 "manualPrivateLinkServiceConnections": [],
                 "subnet": {
-                    "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]"
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VirtualNetworkName'), 'sub-a')]"
                 },
                 "customDnsConfigs": []
             }
@@ -4309,7 +4281,7 @@
             "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_vm_win_jump_mlops_ip_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VirtualNetworkName'), 'sub-a')]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_vm_win_jump_mlops_nsg_name'))]"
             ],
             "properties": {
@@ -4323,7 +4295,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_vm_win_jump_mlops_ip_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('VirtualNetworkName'), 'sub-a')]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
