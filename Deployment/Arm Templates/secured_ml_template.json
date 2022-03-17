@@ -35,7 +35,7 @@
             "defaultValue": "vm-win-jump-mlops-ip",
             "type": "String"
         },
-        "privateDnsZones_privatelink_api_azureml_ms_name": {
+        "privateDnsZones_privatelink_workspace_name": {
             "defaultValue": "privatelink.api.azureml.ms",
             "type": "String"
         },
@@ -47,7 +47,7 @@
             "defaultValue": "private_endpoint_mlops_test",
             "type": "String"
         },
-        "privateDnsZones_privatelink_notebooks_azure_net_name": {
+        "privateDnsZones_privatelink_notebooks_name": {
             "defaultValue": "privatelink.notebooks.azure.net",
             "type": "String"
         },
@@ -126,55 +126,9 @@
             }
         },
         {
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2020-11-01",
-            "name": "[parameters('networkSecurityGroups_vm_win_jump_mlops_nsg_name')]",
-            "location": "[parameters('Location')]",
-            "properties": {
-                "securityRules": [
-                    {
-                        "name": "SecurityCenter-JITRule--1898683417-027905A51C1146FAA79DAAE4881EC9ED",
-                        "properties": {
-                            "description": "ASC JIT Network Access rule created by an initiation request for policy 'default' of VM 'vm-win-jump-mlops'.",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "3389",
-                            "sourceAddressPrefix": "85.65.182.102",
-                            "destinationAddressPrefix": "10.5.1.4",
-                            "access": "Allow",
-                            "priority": 100,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    },
-                    {
-                        "name": "SecurityCenter-JITRule_-1898683417_8386B53544ED428DA59B5D650E74A177",
-                        "properties": {
-                            "description": "ASC JIT Network Access rule for policy 'default' of VM 'vm-win-jump-mlops'.",
-                            "protocol": "*",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "3389",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "10.5.1.4",
-                            "access": "Deny",
-                            "priority": 1000,
-                            "direction": "Inbound",
-                            "sourcePortRanges": [],
-                            "destinationPortRanges": [],
-                            "sourceAddressPrefixes": [],
-                            "destinationAddressPrefixes": []
-                        }
-                    }
-                ]
-            }
-        },
-        {
             "type": "Microsoft.Network/privateDnsZones",
             "apiVersion": "2018-09-01",
-            "name": "[parameters('privateDnsZones_privatelink_api_azureml_ms_name')]",
+            "name": "[parameters('privateDnsZones_privatelink_workspace_name')]",
             "location": "global",
             "properties": {
                 "maxNumberOfRecordSets": 25000,
@@ -182,14 +136,13 @@
                 "maxNumberOfVirtualNetworkLinksWithRegistration": 100,
                 "numberOfRecordSets": 3,
                 "numberOfVirtualNetworkLinks": 0,
-                "numberOfVirtualNetworkLinksWithRegistration": 0,
-                "provisioningState": "Succeeded"
+                "numberOfVirtualNetworkLinksWithRegistration": 0
             }
         },
         {
             "type": "Microsoft.Network/privateDnsZones",
             "apiVersion": "2018-09-01",
-            "name": "[parameters('privateDnsZones_privatelink_notebooks_azure_net_name')]",
+            "name": "[parameters('privateDnsZones_privatelink_notebooks_name')]",
             "location": "global",
             "properties": {
                 "maxNumberOfRecordSets": 25000,
@@ -197,8 +150,7 @@
                 "maxNumberOfVirtualNetworkLinksWithRegistration": 100,
                 "numberOfRecordSets": 2,
                 "numberOfVirtualNetworkLinks": 0,
-                "numberOfVirtualNetworkLinksWithRegistration": 0,
-                "provisioningState": "Succeeded"
+                "numberOfVirtualNetworkLinksWithRegistration": 0
             }
         },
         {
@@ -1293,9 +1245,9 @@
         {
             "type": "Microsoft.Network/privateDnsZones/A",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_api_azureml_ms_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b.workspace.[parameters('Location')]')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_workspace_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b.workspace.[parameters('Location')]')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_api_azureml_ms_name'))]"
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_workspace_name'))]"
             ],
             "properties": {
                 "metadata": {
@@ -1312,9 +1264,9 @@
         {
             "type": "Microsoft.Network/privateDnsZones/A",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_api_azureml_ms_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b.workspace.[parameters('Location')].cert')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_workspace_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b.workspace.[parameters('Location')].cert')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_api_azureml_ms_name'))]"
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_workspace_name'))]"
             ],
             "properties": {
                 "metadata": {
@@ -1331,9 +1283,9 @@
         {
             "type": "Microsoft.Network/privateDnsZones/A",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_notebooks_azure_net_name'), '/ml-mlops-test-[parameters('Location')]-e757ca35-34bd-413c-b24c-b52516861f2b')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_notebooks_name'), '/ml-mlops-test-[parameters('Location')]-e757ca35-34bd-413c-b24c-b52516861f2b')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_azure_net_name'))]"
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_name'))]"
             ],
             "properties": {
                 "metadata": {
@@ -1350,9 +1302,9 @@
         {
             "type": "Microsoft.Network/privateDnsZones/SOA",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_api_azureml_ms_name'), '/@')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_workspace_name'), '/@')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_api_azureml_ms_name'))]"
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_workspace_name'))]"
             ],
             "properties": {
                 "ttl": 3600,
@@ -1370,9 +1322,9 @@
         {
             "type": "Microsoft.Network/privateDnsZones/SOA",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_notebooks_azure_net_name'), '/@')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_notebooks_name'), '/@')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_azure_net_name'))]"
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_name'))]"
             ],
             "properties": {
                 "ttl": 3600,
@@ -4199,10 +4151,10 @@
         {
             "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_api_azureml_ms_name'), '/lxxkar6k26xra')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_workspace_name'), '/lxxkar6k26xra')]",
             "location": "global",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_api_azureml_ms_name'))]",
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_workspace_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
             ],
             "properties": {
@@ -4215,10 +4167,10 @@
         {
             "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_notebooks_azure_net_name'), '/lxxkar6k26xra')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_notebooks_name'), '/lxxkar6k26xra')]",
             "location": "global",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_azure_net_name'))]",
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_mlops_name'))]"
             ],
             "properties": {
@@ -4394,21 +4346,21 @@
             "name": "[concat(parameters('privateEndpoints_private_endpoint_mlops_test_name'), '/default')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/privateEndpoints', parameters('privateEndpoints_private_endpoint_mlops_test_name'))]",
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_api_azureml_ms_name'))]",
-                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_azure_net_name'))]"
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_workspace_name'))]",
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_name'))]"
             ],
             "properties": {
                 "privateDnsZoneConfigs": [
                     {
                         "name": "privatelink-api-azureml-ms",
                         "properties": {
-                            "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_api_azureml_ms_name'))]"
+                            "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_workspace_name'))]"
                         }
                     },
                     {
                         "name": "privatelink-notebooks-azure-net",
                         "properties": {
-                            "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_azure_net_name'))]"
+                            "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_name'))]"
                         }
                     }
                 ]
