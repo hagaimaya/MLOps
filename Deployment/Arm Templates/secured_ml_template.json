@@ -66,17 +66,21 @@
         "Environment": {
             "type": "string",
             "allowedValues": [ "dev", "stg", "prod" ]
+        },
+        "Location": {
+            "type": "string"
         }
     },
     "variables": {
-        "ApplicationInsight": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-appi')]"
+        "ApplicationInsightName": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-appi')]",
+        "KeyVaultName": "[concat(parameters('Environment'), '-', replace(parameters('workspaces_name'),'-',''), '-kv')]"
     },
     "resources": [
         {
             "type": "microsoft.insights/components",
             "apiVersion": "2020-02-02",
-            "name": "[variables('ApplicationInsight')]",
-            "location": "westeurope",
+            "name": "[variables('ApplicationInsightName')]",
+            "location": "[parameters('Location')]",
             "kind": "web",
             "properties": {
                 "Application_Type": "web",
@@ -89,17 +93,17 @@
         {
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2021-11-01-preview",
-            "name": "[parameters('vaults_mlopstest6114817870_name')]",
-            "location": "westeurope",
+            "name": "[variables('KeyVaultName')]",
+            "location": "[parameters('Location')]",
             "properties": {
                 "sku": {
                     "family": "A",
                     "name": "standard"
                 },
-                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+                "tenantId": "[subscription().tenantId]",
                 "accessPolicies": [
                     {
-                        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+                        "tenantId": "[subscription().tenantId]",
                         "objectId": "9991e49e-fb57-43a0-a35e-a2dd79f92022",
                         "permissions": {
                             "keys": [
@@ -117,8 +121,7 @@
                 ],
                 "enabledForDeployment": false,
                 "enableSoftDelete": true,
-                "vaultUri": "[concat('https://', parameters('vaults_mlopstest6114817870_name'), '.vault.azure.net/')]",
-                "provisioningState": "Succeeded",
+                "vaultUri": "[concat('https://', variables('KeyVaultName'), '.vault.azure.net/')]",
                 "publicNetworkAccess": "Enabled"
             }
         },
@@ -126,7 +129,7 @@
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-11-01",
             "name": "[parameters('networkSecurityGroups_vm_win_jump_mlops_nsg_name')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "properties": {
                 "securityRules": [
                     {
@@ -202,7 +205,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2020-11-01",
             "name": "[parameters('publicIPAddresses_vm_win_jump_mlops_ip_name')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "sku": {
                 "name": "Basic",
                 "tier": "Regional"
@@ -219,7 +222,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
             "name": "[parameters('virtualNetworks_vnet_mlops_name')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
@@ -272,7 +275,7 @@
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2021-08-01",
             "name": "[parameters('storageAccounts_mlopstest8392629195_name')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "sku": {
                 "name": "Standard_LRS",
                 "tier": "Standard"
@@ -335,7 +338,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2021-11-01",
             "name": "[parameters('virtualMachines_vm_win_jump_mlops_name')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vm_win_jump_mlops807_name'))]"
             ],
@@ -401,7 +404,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/degradationindependencyduration')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -425,7 +428,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/degradationinserverresponsetime')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -449,7 +452,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/digestMailConfiguration')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -473,7 +476,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/extension_billingdatavolumedailyspikeextension')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -497,7 +500,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/extension_canaryextension')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -521,7 +524,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/extension_exceptionchangeextension')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -545,7 +548,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/extension_memoryleakextension')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -569,7 +572,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/extension_securityextensionspackage')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -593,7 +596,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/extension_traceseveritydetector')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -617,7 +620,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/longdependencyduration')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -641,7 +644,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/migrationToAlertRulesCompleted')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -665,7 +668,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/slowpageloadtime')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -689,7 +692,7 @@
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
             "name": "[concat(parameters('components_mlopstest9967389833_name'), '/slowserverresponsetime')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
@@ -712,10 +715,10 @@
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2021-11-01-preview",
-            "name": "[concat(parameters('vaults_mlopstest6114817870_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b--KD-2feJ69aS2UxHlhgJmAtHRCTGVyFvJ8417T7q-7M')]",
-            "location": "westeurope",
+            "name": "[concat(variables('KeyVaultName'), '/e757ca35-34bd-413c-b24c-b52516861f2b--KD-2feJ69aS2UxHlhgJmAtHRCTGVyFvJ8417T7q-7M')]",
+            "location": "[parameters('Location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_mlopstest6114817870_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
             ],
             "properties": {
                 "contentType": "application/vnd.ms-AzureML-StorageKey",
@@ -728,10 +731,10 @@
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2021-11-01-preview",
-            "name": "[concat(parameters('vaults_mlopstest6114817870_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b-PDBeXgenaHjvxX51pIfhZ2IebT7AZPcxvp3a6CjSiVo')]",
-            "location": "westeurope",
+            "name": "[concat(variables('KeyVaultName'), '/e757ca35-34bd-413c-b24c-b52516861f2b-PDBeXgenaHjvxX51pIfhZ2IebT7AZPcxvp3a6CjSiVo')]",
+            "location": "[parameters('Location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_mlopstest6114817870_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
             ],
             "properties": {
                 "contentType": "application/vnd.ms-AzureML-StorageKey",
@@ -744,10 +747,10 @@
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2021-11-01-preview",
-            "name": "[concat(parameters('vaults_mlopstest6114817870_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b-smUtPOHnx0gntk5uv7FFUgXpbAfrXyTB6zqOxd5d3kE')]",
-            "location": "westeurope",
+            "name": "[concat(variables('KeyVaultName'), '/e757ca35-34bd-413c-b24c-b52516861f2b-smUtPOHnx0gntk5uv7FFUgXpbAfrXyTB6zqOxd5d3kE')]",
+            "location": "[parameters('Location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_mlopstest6114817870_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
             ],
             "properties": {
                 "contentType": "application/vnd.ms-AzureML-StorageKey",
@@ -760,10 +763,10 @@
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2021-11-01-preview",
-            "name": "[concat(parameters('vaults_mlopstest6114817870_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b-uaC9-KN9eE-YKHzFSsfvLnH30ar99a1t7rp1SY5j5oo')]",
-            "location": "westeurope",
+            "name": "[concat(variables('KeyVaultName'), '/e757ca35-34bd-413c-b24c-b52516861f2b-uaC9-KN9eE-YKHzFSsfvLnH30ar99a1t7rp1SY5j5oo')]",
+            "location": "[parameters('Location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_mlopstest6114817870_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]"
             ],
             "properties": {
                 "contentType": "application/vnd.ms-AzureML-StorageKey",
@@ -1185,7 +1188,7 @@
             "type": "Microsoft.MachineLearningServices/workspaces/privateEndpointConnections",
             "apiVersion": "2022-01-01-preview",
             "name": "[concat(parameters('workspaces_name'), '/', parameters('workspaces_name'), '.f11791ff-c708-499b-8ec6-5fe8c47540c0')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]"
             ],
@@ -1203,7 +1206,7 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
             "name": "[parameters('networkInterfaces_private_endpoint_mlops_test_nic_b4b8e3f6_93ef_49fe_a862_ec3cc044fe9a_name')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]"
             ],
@@ -1290,7 +1293,7 @@
         {
             "type": "Microsoft.Network/privateDnsZones/A",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_api_azureml_ms_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b.workspace.westeurope')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_api_azureml_ms_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b.workspace.[parameters('Location')]')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_api_azureml_ms_name'))]"
             ],
@@ -1309,7 +1312,7 @@
         {
             "type": "Microsoft.Network/privateDnsZones/A",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_api_azureml_ms_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b.workspace.westeurope.cert')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_api_azureml_ms_name'), '/e757ca35-34bd-413c-b24c-b52516861f2b.workspace.[parameters('Location')].cert')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_api_azureml_ms_name'))]"
             ],
@@ -1328,7 +1331,7 @@
         {
             "type": "Microsoft.Network/privateDnsZones/A",
             "apiVersion": "2018-09-01",
-            "name": "[concat(parameters('privateDnsZones_privatelink_notebooks_azure_net_name'), '/ml-mlops-test-westeurope-e757ca35-34bd-413c-b24c-b52516861f2b')]",
+            "name": "[concat(parameters('privateDnsZones_privatelink_notebooks_azure_net_name'), '/ml-mlops-test-[parameters('Location')]-e757ca35-34bd-413c-b24c-b52516861f2b')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_notebooks_azure_net_name'))]"
             ],
@@ -4229,7 +4232,7 @@
             "type": "Microsoft.Network/privateEndpoints",
             "apiVersion": "2020-11-01",
             "name": "[parameters('privateEndpoints_private_endpoint_mlops_test_name')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]"
@@ -4324,10 +4327,10 @@
             "type": "Microsoft.MachineLearningServices/workspaces",
             "apiVersion": "2022-01-01-preview",
             "name": "[parameters('workspaces_name')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]",
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_mlopstest6114817870_name'))]",
+                "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
                 "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]"
             ],
             "sku": {
@@ -4340,18 +4343,18 @@
             "properties": {
                 "friendlyName": "[parameters('workspaces_name')]",
                 "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mlopstest8392629195_name'))]",
-                "keyVault": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_mlopstest6114817870_name'))]",
+                "keyVault": "[resourceId('Microsoft.KeyVault/vaults', variables('KeyVaultName'))]",
                 "applicationInsights": "[resourceId('microsoft.insights/components', parameters('components_mlopstest9967389833_name'))]",
                 "hbiWorkspace": false,
                 "publicNetworkAccess": "Disabled",
-                "discoveryUrl": "https://e757ca35-34bd-413c-b24c-b52516861f2b.workspace.westeurope.api.azureml.ms/discovery/workspaces/e757ca35-34bd-413c-b24c-b52516861f2b"
+                "discoveryUrl": "https://e757ca35-34bd-413c-b24c-b52516861f2b.workspace.[parameters('Location')].api.azureml.ms/discovery/workspaces/e757ca35-34bd-413c-b24c-b52516861f2b"
             }
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2020-11-01",
             "name": "[parameters('networkInterfaces_vm_win_jump_mlops807_name')]",
-            "location": "westeurope",
+            "location": "[parameters('Location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_vm_win_jump_mlops_ip_name'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_mlops_name'), 'sub-a')]",
