@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworks_vnet_mlops_name": {
+            "value": null
+        },
+        "vaults_mlopstest6114817870_name": {
+            "value": null
+        },
+        "components_mlopstest9967389833_name": {
+            "value": null
+        },
+        "virtualMachines_vm_win_jump_mlops_name": {
+            "value": null
+        },
+        "storageAccounts_mlopstest8392629195_name": {
+            "value": null
+        },
+        "workspaces_mlops_test_name": {
+            "value": null
+        },
+        "networkInterfaces_vm_win_jump_mlops807_name": {
+            "value": null
+        },
+        "publicIPAddresses_vm_win_jump_mlops_ip_name": {
+            "value": null
+        },
+        "privateDnsZones_privatelink_api_azureml_ms_name": {
+            "value": null
+        },
+        "networkSecurityGroups_vm_win_jump_mlops_nsg_name": {
+            "value": null
+        },
+        "privateEndpoints_private_endpoint_mlops_test_name": {
+            "value": null
+        },
+        "privateDnsZones_privatelink_notebooks_azure_net_name": {
+            "value": null
+        },
+        "smartdetectoralertrules_failure_anomalies___mlopstest9967389833_name": {
+            "value": null
+        },
+        "networkInterfaces_private_endpoint_mlops_test_nic_b4b8e3f6_93ef_49fe_a862_ec3cc044fe9a_name": {
+            "value": null
+        },
+        "actiongroups_application_insights_smart_detection_externalid": {
+            "value": null
+        }
+    }
+}
