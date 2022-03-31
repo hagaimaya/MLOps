@@ -3,13 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "prefix": {
-      "value": "GEN-UNIQUE-6"
+      "value": "MLOPS"
     },
     "dsvmJumpboxUsername": {
-      "value": "GEN-UNIQUE-12"
+      "value": "MLOPSAdmin"
     },
     "dsvmJumpboxPassword": {
-      "value": "GEN-PASSWORD"
+      "value": "Lq2w3e4r5t6!"
     }
   }
 }
