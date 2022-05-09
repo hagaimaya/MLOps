@@ -1,0 +1,20 @@
+name: model-training
+on:
+  pull_request_target:
+    types:
+      - opened
+    branches:    
+      - 'releases/**'
+      - 'main'
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl \
+          -i -u hagaimaya:${{ secrets.GITHUBAPITOKEN }}
+          -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/$GITHUB_REPOSITORY/check-runs \
+          -d '{"name":"Model-training","head_sha":"$GITHUB_SHA","status":"in_progress","external_id":"$GITHUB_SHA"}'
+          
