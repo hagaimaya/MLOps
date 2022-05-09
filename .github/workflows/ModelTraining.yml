@@ -9,7 +9,8 @@ jobs:
     steps:
       - run: |
           curl \
-          -i -u hagaimaya:${{ secrets.GITHUBAPITOKEN }} \
+          -i --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \ 
+          --header 'content-type: application/json' \
           -X POST \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/$GITHUB_REPOSITORY/check-runs \
